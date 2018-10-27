@@ -1,4 +1,4 @@
-room 0 wall d0 d2 wall
+room 0 wall d0 wall wall
 room 1 d0 wall d1 wall
 room 2 wall wall wall d1
 door d0 0 1 close
