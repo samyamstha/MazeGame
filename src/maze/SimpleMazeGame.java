@@ -63,8 +63,7 @@ public class SimpleMazeGame {
 
         maze.setCurrentRoom(0);
 
-
-        //System.out.println("The maze does not have any rooms yet!");
+        System.out.println("The maze does not have any rooms yet!");
         return maze;
 
 
@@ -73,27 +72,35 @@ public class SimpleMazeGame {
     public static Maze loadMaze(final String path) throws FileNotFoundException {
         Maze maze = new Maze();
 
+
         HashMap<String, String> roomMap = null;
         HashMap<String, String> doorMap = null;
         System.out.println("Please load a maze from the file!");
 
         ArrayList<HashMap> roomList = new ArrayList<>();
         ArrayList<HashMap> doorList = new ArrayList<>();
+
+        //open the file and start reading
         File file = new File(path);
         Scanner sc = new Scanner(file);
-        ArrayList<String> mazeInfo = new ArrayList<>();
-        ArrayList<Room> roomObjs = new ArrayList<>();
-        ArrayList<Door> doorObjs = new ArrayList<>();
 
+
+        ArrayList<String> mazeInfo = new ArrayList<>(); //ArrayList to add the lines of the file
+        ArrayList<Room> roomObjs = new ArrayList<>();  //ArrayList to add the Room objects
+        ArrayList<Door> doorObjs = new ArrayList<>();   //ArrayList to add the Door objects
+
+        //Run till the file has line in it
         while (sc.hasNextLine()) {
-            mazeInfo.add(sc.nextLine());
+            String line = sc.nextLine();
+
+            //Only add the line if it is not blank
+            if (line.length() > 0){
+                mazeInfo.add(line);
+            }
+
         }
 
-		/*for (int i = 0; i < mazeInfo.size(); i++){
-			System.out.println("Printing from mazeInfo");
-			System.out.println("Index :" + i + " value: " + mazeInfo.get(i));
-		}*/
-
+        //Split the line and add the attributes of room and doors to respective maps
         for (String info : mazeInfo) {
 
             String[] element = info.split(" ");
@@ -119,6 +126,7 @@ public class SimpleMazeGame {
 
         System.out.println();
 
+        //Instantiate Room objects and add them to the maze, and also to the ArrayList of the Room objects
         for (HashMap<String, String> rmap : roomList) {
             System.out.println(rmap.get("number"));
             int roomNum = Integer.parseInt(rmap.get("number"));
@@ -127,8 +135,8 @@ public class SimpleMazeGame {
             maze.addRoom(room);
         }
 
+        //Instantiate Door objects and add them to the ArrayList of Door objects
         for (HashMap<String, String> dmap : doorList) {
-            //System.out.println(dmap.get("name"));
             String doorName = dmap.get("name");
             int room1 = Integer.parseInt(dmap.get("room1"));
             int room2 = Integer.parseInt(dmap.get("room2"));
@@ -143,102 +151,41 @@ public class SimpleMazeGame {
 
         }
 
-        System.out.println("is wall? : " + roomList.get(0).get("south").toString());
+        //Iterate through the rooms and add set the sides
         for (int i = 0; i < roomObjs.size(); i++) {
 
-            SimpleMazeGame.switchCase(roomList, i, doorObjs, roomObjs, "north", Direction.North);
-            SimpleMazeGame.switchCase(roomList, i, doorObjs, roomObjs, "south", Direction.South);
-            SimpleMazeGame.switchCase(roomList, i, doorObjs, roomObjs, "east", Direction.East);
-            SimpleMazeGame.switchCase(roomList, i, doorObjs, roomObjs, "west", Direction.West);
-
-
-				/*switch (roomList.get(i).get("north").toString()) {
-
-					case "wall":
-						roomObjs.get(i).setSide(Direction.North, new Wall());
-						System.out.println("Set New Wall from first switch ");
-						break;
-					case "d0":
-						roomObjs.get(i).setSide(Direction.North, doorObjs.get(0));
-						System.out.println("Set New d0 from first switch");
-
-						break;
-					case "d1":
-						roomObjs.get(i).setSide(Direction.North, doorObjs.get(1));
-						System.out.println("Set New d1 from first switch");
-						break;
-					default:
-						System.out.println("Default for north");
-				}
-
-				switch (roomList.get(i).get("south").toString()) {
-
-					case "wall":
-						roomObjs.get(i).setSide(Direction.South, new Wall());
-						System.out.println("Set New Wall from second switch");
-
-						break;
-					case "d0":
-						roomObjs.get(i).setSide(Direction.South, doorObjs.get(0));
-						System.out.println("Set New d0  from second switch");
-
-						break;
-					case "d1":
-						roomObjs.get(i).setSide(Direction.South, doorObjs.get(1));
-						System.out.println("Set New d1 from second switch");
-
-						break;
-					default:
-						System.out.println("Default for south");
-				}
-				switch (roomList.get(i).get("east").toString()) {
-
-					case "wall":
-						roomObjs.get(i).setSide(Direction.East, new Wall());
-						System.out.println("Set New Wall  from third switch");
-
-						break;
-					case "d0":
-						roomObjs.get(i).setSide(Direction.East, doorObjs.get(0));
-						System.out.println("Set New d0  from third switch");
-
-						break;
-					case "d1":
-						roomObjs.get(i).setSide(Direction.East, doorObjs.get(1));
-						System.out.println("Set New d1 from third switch");
-						break;
-					default:
-						System.out.println("Default for east");
-				}
-
-				switch (roomList.get(i).get("west").toString()) {
-				case "wall":
-					roomObjs.get(i).setSide(Direction.West, new Wall());
-					System.out.println("Set New Wall  from fourth switch");
-					break;
-				case "d0":
-					roomObjs.get(i).setSide(Direction.West, doorObjs.get(0));
-					System.out.println("Set New d0 from fourth switch ");
-
-					break;
-				case "d1":
-					roomObjs.get(i).setSide(Direction.West, doorObjs.get(1));
-					System.out.println("Set New d1 from fourth switch");
-					break;
-				default:
-					System.out.println("Default for west");
-			}
-
-*/
+            SimpleMazeGame.decideCase(roomList, i, doorObjs, roomObjs, "north", Direction.North);
+            SimpleMazeGame.decideCase(roomList, i, doorObjs, roomObjs, "south", Direction.South);
+            SimpleMazeGame.decideCase(roomList, i, doorObjs, roomObjs, "east", Direction.East);
+            SimpleMazeGame.decideCase(roomList, i, doorObjs, roomObjs, "west", Direction.West);
         }
 
         maze.setCurrentRoom(0);
 
-
         return maze;
     }
 
-    public static void switchCase(ArrayList<HashMap> roomList, int i, ArrayList<Door> doorObjs, ArrayList<Room> roomObjs, String direction, Direction dir) {
+    //Function that decides what to set on the sides of the rooms
+    public static void decideCase(ArrayList<HashMap> roomList, int i, ArrayList<Door> doorObjs, ArrayList<Room> roomObjs, String direction, Direction dir) {
+
+        String lookUp = roomList.get(i).get(direction).toString();
+
+        //Add wall
+        if (lookUp.equals("wall")){
+            roomObjs.get(i).setSide(dir, new Wall());
+
+            //Add respective door
+        }else if(lookUp.charAt(0) == 'd'){
+            int doorNum = (Character.getNumericValue(lookUp.charAt(1)));
+            roomObjs.get(i).setSide(dir, doorObjs.get(doorNum));
+
+            //Add respective room
+        }else {
+            int roomNum = Integer.parseInt(lookUp);
+            roomObjs.get(i).setSide(dir, roomObjs.get(roomNum));
+
+        }
+/*
         switch (roomList.get(i).get(direction).toString()) {
             case "wall":
                 roomObjs.get(i).setSide(dir, new Wall());
@@ -371,7 +318,7 @@ public class SimpleMazeGame {
                 break;
             default:
                 System.out.println("Default for west");
-        }
+        }*/
     }
 
 
@@ -379,6 +326,9 @@ public class SimpleMazeGame {
 
         Maze maze = null;
         String filePath;
+        //check if the argument has been passed to the program
+        //call loadMaze() if argument is passed
+        //else call createMaze()
         if (args.length == 1) {
             filePath = args[0];
             System.out.println("The argument passed is " + filePath);
