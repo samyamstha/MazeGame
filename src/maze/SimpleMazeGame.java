@@ -34,121 +34,125 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 /**
- * 
  * @author Sunny
  * @version 1.0
  * @since 1.0
  */
-public class SimpleMazeGame
-{
-	/**
-	 * Creates a small maze.
-	 */
-	public static Maze createMaze() throws FileNotFoundException {
-		
-		Maze maze = new Maze();
+public class SimpleMazeGame {
+    /**
+     * Creates a small maze.
+     */
+    public static Maze createMaze() throws FileNotFoundException {
+
+        Maze maze = new Maze();
 
 
-			Room room0 = new Room(0);
-			Room room1 = new Room(1);
-			Door door0 = new Door(room0, room1);
-			maze.addRoom(room0);
-			maze.addRoom(room1);
-			room0.setSide(Direction.North, new Wall());
-			room0.setSide(Direction.East, door0);
-			room0.setSide(Direction.South, new Wall());
-			room0.setSide(Direction.West, new Wall());
-			room1.setSide(Direction.North, new Wall());
-			room1.setSide(Direction.East, new Wall());
-			room1.setSide(Direction.South, new Wall());
-			room1.setSide(Direction.West, door0);
+        Room room0 = new Room(0);
+        Room room1 = new Room(1);
+        Door door0 = new Door(room0, room1);
+        maze.addRoom(room0);
+        maze.addRoom(room1);
+        room0.setSide(Direction.North, new Wall());
+        room0.setSide(Direction.East, door0);
+        room0.setSide(Direction.South, new Wall());
+        room0.setSide(Direction.West, new Wall());
+        room1.setSide(Direction.North, new Wall());
+        room1.setSide(Direction.East, new Wall());
+        room1.setSide(Direction.South, new Wall());
+        room1.setSide(Direction.West, door0);
 
-			maze.setCurrentRoom(0);
+        maze.setCurrentRoom(0);
 
 
-		//System.out.println("The maze does not have any rooms yet!");
-		return maze;
-		
+        //System.out.println("The maze does not have any rooms yet!");
+        return maze;
 
-	}
 
-	public static Maze loadMaze(final String path) throws FileNotFoundException {
-		Maze maze = new Maze();
+    }
 
-		HashMap<String, String> roomMap = null;
-		HashMap<String, String> doorMap = null;
-		System.out.println("Please load a maze from the file!");
+    public static Maze loadMaze(final String path) throws FileNotFoundException {
+        Maze maze = new Maze();
 
-		ArrayList<HashMap> roomList = new ArrayList<>();
-		ArrayList<HashMap> doorList = new ArrayList<>();
-		File file = new File(path);
-		Scanner sc = new Scanner(file);
-		ArrayList<String> mazeInfo = new ArrayList<>();
-		ArrayList<Room> roomObjs = new ArrayList<>();
-		ArrayList<Door> doorObjs = new ArrayList<>();
+        HashMap<String, String> roomMap = null;
+        HashMap<String, String> doorMap = null;
+        System.out.println("Please load a maze from the file!");
 
-		while (sc.hasNextLine()){
-			mazeInfo.add(sc.nextLine());
-		}
+        ArrayList<HashMap> roomList = new ArrayList<>();
+        ArrayList<HashMap> doorList = new ArrayList<>();
+        File file = new File(path);
+        Scanner sc = new Scanner(file);
+        ArrayList<String> mazeInfo = new ArrayList<>();
+        ArrayList<Room> roomObjs = new ArrayList<>();
+        ArrayList<Door> doorObjs = new ArrayList<>();
+
+        while (sc.hasNextLine()) {
+            mazeInfo.add(sc.nextLine());
+        }
 
 		/*for (int i = 0; i < mazeInfo.size(); i++){
 			System.out.println("Printing from mazeInfo");
 			System.out.println("Index :" + i + " value: " + mazeInfo.get(i));
 		}*/
 
-		for (String info: mazeInfo) {
+        for (String info : mazeInfo) {
 
-			String [] element = info.split(" ");
+            String[] element = info.split(" ");
 
-			if(element[0].equals("room")){
-				roomMap = new HashMap<>();
-				roomMap.put("number", element[1]);
-				roomMap.put("north", element[2]);
-				roomMap.put("south", element[3]);
-				roomMap.put("east", element[4]);
-				roomMap.put("west", element[5]);
-				roomList.add(roomMap);
-			}else{
-				doorMap = new HashMap<>();
-				doorMap.put("name", element[1]);
-				doorMap.put("room1", element[2]);
-				doorMap.put("room2", element[3]);
-				doorMap.put("openOrClose", element[4]);
-				doorList.add(doorMap);
-			}
-		}
+            if (element[0].equals("room")) {
+                roomMap = new HashMap<>();
+                roomMap.put("number", element[1]);
+                roomMap.put("north", element[2]);
+                roomMap.put("south", element[3]);
+                roomMap.put("east", element[4]);
+                roomMap.put("west", element[5]);
+                roomList.add(roomMap);
+            } else {
+                doorMap = new HashMap<>();
+                doorMap.put("name", element[1]);
+                doorMap.put("room1", element[2]);
+                doorMap.put("room2", element[3]);
+                doorMap.put("openOrClose", element[4]);
+                doorList.add(doorMap);
+            }
+        }
 
 
-		System.out.println();
+        System.out.println();
 
-		for (HashMap<String,String> rmap : roomList) {
-			System.out.println(rmap.get("number"));
-			int roomNum = Integer.parseInt(rmap.get("number"));
-			Room room = new Room(roomNum);
-			roomObjs.add(room);
-			maze.addRoom(room);
-		}
+        for (HashMap<String, String> rmap : roomList) {
+            System.out.println(rmap.get("number"));
+            int roomNum = Integer.parseInt(rmap.get("number"));
+            Room room = new Room(roomNum);
+            roomObjs.add(room);
+            maze.addRoom(room);
+        }
 
-		for (HashMap<String,String> dmap : doorList) {
-			//System.out.println(dmap.get("name"));
-			String doorName = dmap.get("name");
-			int room1 = Integer.parseInt(dmap.get("room1"));
-			int room2 = Integer.parseInt(dmap.get("room2"));
+        for (HashMap<String, String> dmap : doorList) {
+            //System.out.println(dmap.get("name"));
+            String doorName = dmap.get("name");
+            int room1 = Integer.parseInt(dmap.get("room1"));
+            int room2 = Integer.parseInt(dmap.get("room2"));
 
-			Door door = new Door(roomObjs.get(room1), roomObjs.get(room2));
-			if (dmap.get("openOrClose").equals("close")){
-				door.setOpen(false);
-			}else{
-				door.setOpen(true);
-			}
-			doorObjs.add(door);
+            Door door = new Door(roomObjs.get(room1), roomObjs.get(room2));
+            if (dmap.get("openOrClose").equals("close")) {
+                door.setOpen(false);
+            } else {
+                door.setOpen(true);
+            }
+            doorObjs.add(door);
 
-		}
+        }
 
-		System.out.println("is wall? : " +roomList.get(0).get("south").toString() );
-		for(int i = 0; i < roomObjs.size(); i++){
+        System.out.println("is wall? : " + roomList.get(0).get("south").toString());
+        for (int i = 0; i < roomObjs.size(); i++) {
 
-				switch (roomList.get(i).get("north").toString()) {
+            SimpleMazeGame.switchCase(roomList, i, doorObjs, roomObjs, "north", Direction.North);
+            SimpleMazeGame.switchCase(roomList, i, doorObjs, roomObjs, "south", Direction.South);
+            SimpleMazeGame.switchCase(roomList, i, doorObjs, roomObjs, "east", Direction.East);
+            SimpleMazeGame.switchCase(roomList, i, doorObjs, roomObjs, "west", Direction.West);
+
+
+				/*switch (roomList.get(i).get("north").toString()) {
 
 					case "wall":
 						roomObjs.get(i).setSide(Direction.North, new Wall());
@@ -208,74 +212,182 @@ public class SimpleMazeGame
 				}
 
 				switch (roomList.get(i).get("west").toString()) {
-					case "wall":
-						roomObjs.get(i).setSide(Direction.West, new Wall());
-						System.out.println("Set New Wall  from fourth switch");
-						break;
-					case "d0":
-						roomObjs.get(i).setSide(Direction.West, doorObjs.get(0));
-						System.out.println("Set New d0 from fourth switch ");
+				case "wall":
+					roomObjs.get(i).setSide(Direction.West, new Wall());
+					System.out.println("Set New Wall  from fourth switch");
+					break;
+				case "d0":
+					roomObjs.get(i).setSide(Direction.West, doorObjs.get(0));
+					System.out.println("Set New d0 from fourth switch ");
 
-						break;
-					case "d1":
-						roomObjs.get(i).setSide(Direction.West, doorObjs.get(1));
-						System.out.println("Set New d1 from fourth switch");
-						break;
-					default:
-						System.out.println("Default for west");
-				}
+					break;
+				case "d1":
+					roomObjs.get(i).setSide(Direction.West, doorObjs.get(1));
+					System.out.println("Set New d1 from fourth switch");
+					break;
+				default:
+					System.out.println("Default for west");
 			}
 
-		System.out.println("\n");
-		for (Room ro: roomObjs) {
-			System.out.println(ro.getNumber());
-			System.out.println();
-			System.out.println(ro.getSide(Direction.North));
-			System.out.println(ro.getSide(Direction.South));
-			System.out.println(ro.getSide(Direction.East));
-			System.out.println(ro.getSide(Direction.West));
+*/
+        }
 
-		};
+        maze.setCurrentRoom(0);
 
 
+        return maze;
+    }
 
-		maze.setCurrentRoom(0);
+    public static void switchCase(ArrayList<HashMap> roomList, int i, ArrayList<Door> doorObjs, ArrayList<Room> roomObjs, String direction, Direction dir) {
+        switch (roomList.get(i).get(direction).toString()) {
+            case "wall":
+                roomObjs.get(i).setSide(dir, new Wall());
+                System.out.println("Set New Wall  from fourth switch");
+                break;
+            case "d0":
+                roomObjs.get(i).setSide(dir, doorObjs.get(0));
+                System.out.println("Set New d0 from fourth switch ");
+
+                break;
+            case "d1":
+                roomObjs.get(i).setSide(dir, doorObjs.get(1));
+                System.out.println("Set New d1 from fourth switch");
+                break;
+            case "d2":
+                roomObjs.get(i).setSide(dir, doorObjs.get(2));
+                System.out.println("Set New d0 from fourth switch ");
+
+                break;
+            case "d3":
+                roomObjs.get(i).setSide(dir, doorObjs.get(3));
+                System.out.println("Set New d1 from fourth switch");
+                break;
+            case "d4":
+                roomObjs.get(i).setSide(dir, doorObjs.get(4));
+                System.out.println("Set New d1 from fourth switch");
+                break;
+            case "d5":
+                roomObjs.get(i).setSide(dir, doorObjs.get(5));
+                System.out.println("Set New d1 from fourth switch");
+                break;
+            case "0":
+                roomObjs.get(i).setSide(dir, roomObjs.get(0));
+                break;
+            case "1":
+                roomObjs.get(i).setSide(dir, roomObjs.get(1));
+                System.out.println("Set New d1 from fourth switch");
+                break;
+            case "2":
+                roomObjs.get(i).setSide(dir, roomObjs.get(2));
+                System.out.println("Set New d1 from fourth switch");
+                break;
+            case "3":
+                roomObjs.get(i).setSide(dir, roomObjs.get(3));
+                System.out.println("Set New d1 from fourth switch");
+                break;
+            case "4":
+                roomObjs.get(i).setSide(dir, roomObjs.get(4));
+                System.out.println("Set New d1 from fourth switch");
+                break;
+            case "5":
+                roomObjs.get(i).setSide(dir, roomObjs.get(5));
+                System.out.println("Set New d1 from fourth switch");
+                break;
+            case "6":
+                roomObjs.get(i).setSide(dir, roomObjs.get(6));
+                System.out.println("Set New d1 from fourth switch");
+                break;
+            case "7":
+                roomObjs.get(i).setSide(dir, roomObjs.get(7));
+                System.out.println("Set New d1 from fourth switch");
+                break;
+            case "8":
+                roomObjs.get(i).setSide(dir, roomObjs.get(8));
+                System.out.println("Set New d1 from fourth switch");
+                break;
+            case "9":
+                roomObjs.get(i).setSide(dir, roomObjs.get(9));
+                System.out.println("Set New d1 from fourth switch");
+                break;
+            case "10":
+                roomObjs.get(i).setSide(dir, roomObjs.get(10));
+                System.out.println("Set New d1 from fourth switch");
+                break;
+            case "11":
+                roomObjs.get(i).setSide(dir, roomObjs.get(11));
+                System.out.println("Set New d1 from fourth switch");
+                break;
+            case "12":
+                roomObjs.get(i).setSide(dir, roomObjs.get(12));
+                System.out.println("Set New d1 from fourth switch");
+                break;
+            case "13":
+                roomObjs.get(i).setSide(dir, roomObjs.get(13));
+                System.out.println("Set New d1 from fourth switch");
+                break;
+            case "14":
+                roomObjs.get(i).setSide(dir, roomObjs.get(14));
+                System.out.println("Set New d1 from fourth switch");
+                break;
+            case "15":
+                roomObjs.get(i).setSide(dir, roomObjs.get(15));
+                System.out.println("Set New d1 from fourth switch");
+                break;
+            case "16":
+                roomObjs.get(i).setSide(dir, roomObjs.get(16));
+                System.out.println("Set New d1 from fourth switch");
+                break;
+            case "17":
+                roomObjs.get(i).setSide(dir, roomObjs.get(17));
+                System.out.println("Set New d1 from fourth switch");
+                break;
+            case "18":
+                roomObjs.get(i).setSide(dir, roomObjs.get(18));
+                System.out.println("Set New d1 from fourth switch");
+                break;
+            case "19":
+                roomObjs.get(i).setSide(dir, roomObjs.get(19));
+                System.out.println("Set New d1 from fourth switch");
+                break;
+            case "20":
+                roomObjs.get(i).setSide(dir, roomObjs.get(20));
+                System.out.println("Set New d1 from fourth switch");
+                break;
+            case "21":
+                roomObjs.get(i).setSide(dir, roomObjs.get(21));
+                System.out.println("Set New d1 from fourth switch");
+                break;
+            case "22":
+                roomObjs.get(i).setSide(dir, roomObjs.get(22));
+                System.out.println("Set New d1 from fourth switch");
+                break;
+            case "23":
+                roomObjs.get(i).setSide(dir, roomObjs.get(23));
+                System.out.println("Set New d1 from fourth switch");
+                break;
+            case "24":
+                roomObjs.get(i).setSide(dir, roomObjs.get(24));
+                System.out.println("Set New d1 from fourth switch");
+                break;
+            default:
+                System.out.println("Default for west");
+        }
+    }
 
 
+    public static void main(String[] args) throws FileNotFoundException {
 
-/*
-		for (int i = 0; i < roomList.size(); i++){
-			System.out.println("Index :" + i + " value: " + roomList.get(i));
-		}*/
-/*
-		for (String key: roomMap.keySet()) {
-			System.out.println("key is "+ key + "  value is " + roomMap.get(key));
+        Maze maze = null;
+        String filePath;
+        if (args.length == 1) {
+            filePath = args[0];
+            System.out.println("The argument passed is " + filePath);
+            maze = loadMaze(filePath);
+        } else {
+            maze = createMaze();
+        }
 
-		}*/
-
-/*
-		System.out.println();
-		for (int i = 0; i < doorList.size(); i++){
-			System.out.println("Index :" + i + " value: " + doorList.get(i));
-		}*/
-
-		return maze;
-	}
-
-
-	public static void main(String[] args) throws FileNotFoundException {
-
-		Maze maze = null;
-	    String filePath;
-	    if (args.length == 1 ){
-	    	filePath = args[0];
-			System.out.println("The argument passed is " + filePath);
-			maze = loadMaze(filePath);
-		}else{
-	    	maze = createMaze();
-		}
-
-		MazeViewer viewer = new MazeViewer(maze);
-	    viewer.run();
-	}
+        MazeViewer viewer = new MazeViewer(maze);
+        viewer.run();
+    }
 }
