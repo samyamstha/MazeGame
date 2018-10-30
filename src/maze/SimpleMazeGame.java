@@ -31,7 +31,9 @@ import maze.ui.MazeViewer;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Scanner;
 
 /**
  * @author Sunny
@@ -128,7 +130,7 @@ public class SimpleMazeGame {
 
         //Instantiate Room objects and add them to the maze, and also to the ArrayList of the Room objects
         for (HashMap<String, String> rmap : roomList) {
-            System.out.println(rmap.get("number"));
+            //  System.out.println(rmap.get("number"));
             int roomNum = Integer.parseInt(rmap.get("number"));
             Room room = new Room(roomNum);
             roomObjs.add(room);
@@ -194,12 +196,18 @@ public class SimpleMazeGame {
         Maze maze = null;
         String filePath;
         //check if the argument has been passed to the program
-        //call loadMaze() if argument is passed
+        //call loadMaze() if argument that is passed is correct to the maze type
         //else call createMaze()
         if (args.length == 1) {
             filePath = args[0];
             System.out.println("The argument passed is " + filePath);
-            maze = loadMaze(filePath);
+            try {
+                maze = loadMaze(filePath);
+            } catch (FileNotFoundException e) {
+                System.out.println("Invalid File");
+                System.out.println("Exiting the program");
+                System.exit(0);
+            }
         } else {
             maze = createMaze();
         }
